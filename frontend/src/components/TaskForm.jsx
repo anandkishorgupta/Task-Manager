@@ -15,7 +15,7 @@ const TaskForm = ({ createTask, name, handleInputChange }) => {
             onChange={handleInputChange}
             fullWidth={"true"}
           />
-          <Button variant="contained" disableElevation>
+          <Button variant="contained" disableElevation type="submit">
             Add
           </Button>
         </Stack>
