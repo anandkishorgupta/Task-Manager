@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const taskSchema = mongoose.Schema(
   {
-    name: {
+    Taskname: {
       type: String,
       required: [true, "please add a task"],
     },

@@ -1,9 +1,8 @@
 import { Stack, Typography } from "@mui/material";
-import { Box } from "@mui/system";
 import React from "react";
 
 import { FaEdit, FaCheckDouble, FaTrashAlt } from "react-icons/fa";
-const Task = () => {
+const Task = ({ task, index }) => {
   return (
     <Stack
       direction={"row"}
@@ -14,8 +13,8 @@ const Task = () => {
       marginTop={"7px"}
     >
       <Typography>
-        <b>1.</b>
-        Task 1
+        <b>{index + 1 + ". "}</b>
+        {task.Taskname}
       </Typography>
       <Stack direction={"row"} gap={"10px"}>
         <FaCheckDouble color="green" cursor={"pointer"} />
