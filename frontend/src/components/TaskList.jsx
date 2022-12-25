@@ -5,7 +5,7 @@ import TaskForm from "./TaskForm";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect } from "react";
-
+import LoadImg from "../assets/loading.gif";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -47,12 +47,21 @@ const TaskList = () => {
       await axios.post("http://localhost:5000/api/tasks", formData);
       toast.success("Task added successfully");
       setFormData({ ...formData, Taskname: "" });
+      getTasks();
     } catch (error) {
       toast.error(error.message);
     }
   };
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      getTasks();
+    } catch (error) {
+      toast.error("error.messages");
+    }
+  };
   return (
-    <Box width={"500px"} m={"0 auto"} border={"solid red"} padding={"20px"}>
+    <Box width={"500px"} m={"0 auto"} padding={"20px"}>
       <Typography variant={"h2"}>Task Manager</Typography>
       <TaskForm
         value={Taskname}
@@ -61,7 +70,8 @@ const TaskList = () => {
       />
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Typography>
-          <b> Total Task:</b>0
+          <b> Total Task:</b>
+          {tasks.length}
         </Typography>
         <Typography>
           <b> Completed Task:</b>0
@@ -70,7 +80,7 @@ const TaskList = () => {
       <hr />
       {isLoading && (
         <Box>
-          <img src="#" alt="Loading....." />
+          {/* <img src={LoadImg} alt="Loading....." width={"50px"} /> */}
         </Box>
       )}
       {!isLoading && tasks.length === 0 ? (
@@ -78,7 +88,14 @@ const TaskList = () => {
       ) : (
         <>
           {tasks.map((task, index) => {
-            return <Task key={task._id} task={task} index={index} />;
+            return (
+              <Task
+                key={task._id}
+                task={task}
+                index={index}
+                deleteTask={deleteTask}
+              />
+            );
           })}
         </>
       )}
