@@ -8,8 +8,7 @@ import { useEffect } from "react";
 import LoadImg from "../assets/loading.gif";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [taskCompleted, setTaskCompleted] = useState(false);
+  // const [completedTasks, setCompletedTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editModeId, setEditModeId] = useState();
@@ -51,7 +50,7 @@ const TaskList = () => {
       await axios.post("http://localhost:5000/api/tasks", formData);
       toast.success("Task added successfully");
       setFormData({ ...formData, Taskname: "" });
-      getTasks();
+      await getTasks();
     } catch (error) {
       toast.error(error.message);
     }
@@ -59,7 +58,8 @@ const TaskList = () => {
   const deleteTask = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/tasks/${id}`);
-      getTasks();
+      toast.success("deleted successfully");
+      await getTasks();
     } catch (error) {
       toast.error("error.messages");
     }
@@ -87,16 +87,23 @@ const TaskList = () => {
       );
       toast.success("Task edited successfully");
       setIsEdit(false);
-      getTasks();
+      await getTasks();
       setFormData({ ...formData, Taskname: "" });
     } catch (error) {
       toast.error("error occured");
     }
   };
-  const setToComplete = (task) => {
-    // setCompletedTasks(task);
-    // console.log(completedTasks);
-    setTaskCompleted(true);
+  const setToComplete = async (task) => {
+    try {
+      await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
+        Taskname: task.Taskname,
+        completed: true,
+      });
+      toast.success("completed");
+      await getTasks();
+    } catch (error) {
+      toast.error("error occur");
+    }
   };
 
   return (
@@ -121,7 +128,7 @@ const TaskList = () => {
       <hr />
       {isLoading && (
         <Box>
-          {/* <img src={LoadImg} alt="Loading....." width={"50px"} /> */}
+          <img src={LoadImg} alt="Loading....." width={"50px"} />
         </Box>
       )}
       {!isLoading && tasks.length === 0 ? (
@@ -137,7 +144,6 @@ const TaskList = () => {
                 deleteTask={deleteTask}
                 editMode={editMode}
                 setToComplete={setToComplete}
-                taskCompleted={taskCompleted}
               />
             );
           })}
