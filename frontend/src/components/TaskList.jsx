@@ -9,12 +9,16 @@ import LoadImg from "../assets/loading.gif";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [taskCompleted, setTaskCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editModeId, setEditModeId] = useState();
   const [formData, setFormData] = useState({
     Taskname: "",
     completed: false,
   });
   const { Taskname } = formData;
+
   const handleInputChange = (e) => {
     console.log(e);
     const { name, value } = e.target; //as name=Taskname  **
@@ -60,6 +64,41 @@ const TaskList = () => {
       toast.error("error.messages");
     }
   };
+  const editMode = async (task) => {
+    try {
+      setFormData({ ...formData, Taskname: task.Taskname });
+      setIsEdit(true);
+      setEditModeId(task._id);
+    } catch (error) {
+      toast.error("network error");
+    }
+  };
+
+  const updateTask = async (e) => {
+    e.preventDefault();
+    if (Taskname === "") {
+      return toast.error("Input field cannot be empty");
+    }
+    try {
+      // console.log(editModeId);
+      await axios.put(
+        `http://localhost:5000/api/tasks/${editModeId}`,
+        formData
+      );
+      toast.success("Task edited successfully");
+      setIsEdit(false);
+      getTasks();
+      setFormData({ ...formData, Taskname: "" });
+    } catch (error) {
+      toast.error("error occured");
+    }
+  };
+  const setToComplete = (task) => {
+    // setCompletedTasks(task);
+    // console.log(completedTasks);
+    setTaskCompleted(true);
+  };
+
   return (
     <Box width={"500px"} m={"0 auto"} padding={"20px"}>
       <Typography variant={"h2"}>Task Manager</Typography>
@@ -67,6 +106,8 @@ const TaskList = () => {
         value={Taskname}
         handleInputChange={handleInputChange}
         createTask={createTask}
+        isEdit={isEdit}
+        updateTask={updateTask}
       />
       <Stack direction={"row"} justifyContent={"space-between"}>
         <Typography>
@@ -94,6 +135,9 @@ const TaskList = () => {
                 task={task}
                 index={index}
                 deleteTask={deleteTask}
+                editMode={editMode}
+                setToComplete={setToComplete}
+                taskCompleted={taskCompleted}
               />
             );
           })}

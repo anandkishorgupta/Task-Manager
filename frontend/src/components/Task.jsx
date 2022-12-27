@@ -2,7 +2,14 @@ import { Stack, Typography } from "@mui/material";
 import React from "react";
 
 import { FaEdit, FaCheckDouble, FaTrashAlt } from "react-icons/fa";
-const Task = ({ task, index, deleteTask }) => {
+const Task = ({
+  task,
+  index,
+  deleteTask,
+  editMode,
+  setToComplete,
+  taskCompleted,
+}) => {
   return (
     <Stack
       direction={"row"}
@@ -16,9 +23,22 @@ const Task = ({ task, index, deleteTask }) => {
         <b>{index + 1 + ". "}</b>
         {task.Taskname}
       </Typography>
+
       <Stack direction={"row"} gap={"10px"}>
-        <FaCheckDouble color="green" cursor={"pointer"} />
-        <FaEdit color="blue" cursor={"pointer"} />
+        <FaCheckDouble
+          color="green"
+          cursor={"pointer"}
+          onClick={() => {
+            setToComplete(task);
+          }}
+        />
+        <FaEdit
+          color="blue"
+          cursor={"pointer"}
+          onClick={() => {
+            editMode(task);
+          }}
+        />
         <FaTrashAlt
           color="red"
           cursor={"pointer"}

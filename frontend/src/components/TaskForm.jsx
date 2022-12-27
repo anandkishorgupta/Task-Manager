@@ -2,10 +2,16 @@ import { Box, Button, Input } from "@mui/material";
 import { Stack } from "@mui/system";
 import React from "react";
 
-const TaskForm = ({ createTask, value, handleInputChange }) => {
+const TaskForm = ({
+  createTask,
+  value,
+  handleInputChange,
+  isEdit,
+  updateTask,
+}) => {
   return (
     <Box margin={"30px 0"}>
-      <form onSubmit={createTask}>
+      <form onSubmit={isEdit ? updateTask : createTask}>
         <Stack direction={"row"} gap={"10px"}>
           <Input
             type="text"
@@ -16,7 +22,7 @@ const TaskForm = ({ createTask, value, handleInputChange }) => {
             fullWidth
           />
           <Button variant="contained" disableElevation type="submit">
-            Add
+            {isEdit ? "Edit" : "Add"}
           </Button>
         </Stack>
       </form>
