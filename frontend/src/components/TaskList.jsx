@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import LoadImg from "../assets/loading.gif";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
-  // const [completedTasks, setCompletedTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editModeId, setEditModeId] = useState();
@@ -17,9 +17,8 @@ const TaskList = () => {
     completed: false,
   });
   const { Taskname } = formData;
-
+  
   const handleInputChange = (e) => {
-    console.log(e);
     const { name, value } = e.target; //as name=Taskname  **
     setFormData({ ...formData, [name]: value });
   };
@@ -29,11 +28,9 @@ const TaskList = () => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/tasks");
       setTasks(data);
-      console.log(data);
       setIsLoading(false);
     } catch (error) {
       toast.error(error.message);
-      console.log(error);
       setIsLoading(false);
     }
   };
@@ -42,7 +39,6 @@ const TaskList = () => {
   }, []);
   const createTask = async (e) => {
     e.preventDefault();
-    // console.log(formData);
     if (Taskname === "") {
       return toast.error("Input field cannot be empty");
     }
@@ -80,7 +76,6 @@ const TaskList = () => {
       return toast.error("Input field cannot be empty");
     }
     try {
-      // console.log(editModeId);
       await axios.put(
         `http://localhost:5000/api/tasks/${editModeId}`,
         formData
@@ -95,17 +90,24 @@ const TaskList = () => {
   };
   const setToComplete = async (task) => {
     try {
-      await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
-        Taskname: task.Taskname,
-        completed: true,
-      });
-      toast.success("completed");
+      const { completed } = tasks;
+      if (completed) {
+        await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
+          Taskname: task.Taskname,
+          completed: true,
+        });
+        toast.success("completed");
+      } else {
+        toast.success("task already completed");
+      }
       await getTasks();
     } catch (error) {
       toast.error("error occur");
     }
   };
-
+  useEffect(() => {
+    setCompletedTasks(tasks.filter((task) => task.completed === true));
+  }, [tasks]);
   return (
     <Box width={"500px"} m={"0 auto"} padding={"20px"}>
       <Typography variant={"h2"}>Task Manager</Typography>
@@ -122,7 +124,8 @@ const TaskList = () => {
           {tasks.length}
         </Typography>
         <Typography>
-          <b> Completed Task:</b>0
+          <b> Completed Task:</b>
+          {completedTasks.length}
         </Typography>
       </Stack>
       <hr />
