@@ -17,7 +17,7 @@ const TaskList = () => {
     completed: false,
   });
   const { Taskname } = formData;
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target; //as name=Taskname  **
     setFormData({ ...formData, [name]: value });
@@ -90,8 +90,9 @@ const TaskList = () => {
   };
   const setToComplete = async (task) => {
     try {
-      const { completed } = tasks;
-      if (completed) {
+      const { completed } = task;
+      console.log(completed);
+      if (completed === false) {
         await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
           Taskname: task.Taskname,
           completed: true,
