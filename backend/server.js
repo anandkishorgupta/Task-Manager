@@ -4,7 +4,11 @@ const dotenv = require("dotenv").config();
 const app = express();
 const Task = require("./model/taskModel");
 const cors = require("cors");
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000/","https://task-manager-app.onrender.com"],
+  })
+);
 app.use(express.json()); //need for send json requested data as a response
 app.use(express.urlencoded({ extended: false }));
 const taskRoutes = require("./routes/taskRoutes");
