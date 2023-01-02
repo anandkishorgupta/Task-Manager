@@ -6,7 +6,11 @@ const Task = require("./model/taskModel");
 const cors = require("cors");
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://task-manager-app.onrender.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://task-manager-app.onrender.com",
+      "https://task-manager-app-ktfq.onrender.com",
+    ],
   })
 );
 // https://task-manager-app-api.onrender.com/
